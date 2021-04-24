@@ -110,7 +110,7 @@ router.put('/:id', async (req, res) => {
         countInStock : req.body.countInStock,
         rating : req.body.rating,
         numReviews : req.body.numReviews,
-        isFeatured : req.body.isFeature
+        isFeatured : req.body.isFeatured
         },
         {
             new:true
@@ -128,6 +128,7 @@ router.put('/:id', async (req, res) => {
 //delete product
 router.delete(`/:id`, (req, res) => {
     if(! mongoose.isValidObjectId(req.params.id)){
+        //fast to validate the provided ID
         return res.status(404).json({success:false, message:'could nott find product'})
 
     }
@@ -145,6 +146,41 @@ router.delete(`/:id`, (req, res) => {
     })
 })
 
+
+//get product count
+
+router.get(`/get/count`, async (req, res) =>{
+
+    //slow query
+    let productCount = await Product.countDocuments((count)=> count);
+    
+    if(!productCount){
+        return res.status(500).send('no products');
+
+    }
+    
+
+    res.send({
+        productCount : productCount,
+    });
+})
+
+
+//get featured products
+router.get(`/get/featured/:count`, async (req, res) =>{
+
+    const count = req.params.count ? req.params.count : 0
+    let products = await Product.find({isFeatured:true}).select('name').limit(+count)
+    
+    if(!products){
+        return res.status(500).send('no featured products');
+
+    }
+    
+
+    res.send(products);
+
+})
 
 
 
