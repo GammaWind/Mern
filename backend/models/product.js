@@ -60,4 +60,11 @@ const productSchema = mongoose.Schema({
 
 }) 
 
+productSchema.method('toJSON', function(){
+    const { __v, ...object } = this.toObject();
+    const { _id:id, ...result } = object;
+    return { ...result, id };
+});
+
+
 exports.Product = mongoose.model('Product',productSchema);

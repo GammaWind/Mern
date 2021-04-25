@@ -8,7 +8,12 @@ const mongoose = require('mongoose');
 
 // get all products
 router.get( `/`, async (req, res) => {
-    const productList = await Product.find().populate('category');
+    let filter = {}
+    if (req.query.categories){
+        filter = {category : req.query.categories.split(',')}
+
+    }
+    const productList = await Product.find(filter).populate('category');
 
     if (!productList){
         res.status(500).json({
@@ -88,7 +93,7 @@ router.post( `/`, async (req, res) => {
 
 //update product
 
-
+//issue when updating  new category to product
 router.put('/:id', async (req, res) => {
     //check if updated category is correct
 
