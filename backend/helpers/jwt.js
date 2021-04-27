@@ -1,14 +1,20 @@
 const expressJwt = require('express-jwt');
+require('dotenv/config');
 
 function authJwt()
 {
     const secret  = process.env.secret;
     return expressJwt({  //expressJwt J must be capital
-        secret,
+        secret :  process.env.secret,
         algorithms:['HS256']
         
 
         
+    }).unless({
+        path: [
+            '/api/v1/users/login',
+            '/api/v1/users/register'
+        ]
     })
 }
 
