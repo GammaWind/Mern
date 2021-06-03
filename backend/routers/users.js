@@ -29,34 +29,36 @@ router.get(`/:id`, async (req, res) =>{
 })
 
 //create or register a user
-router.post(`/`,async (req, res) => {
-    let user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        passwordHash: bcrypt.hashSync(req.body.passwordHash, 10),
-        phone: req.body.phone ,
-        isAdmin: req.body.isAdmin,
-        street: req.body.street,
-        apartment: req.body.apartment,
-        zip :req.body.zip,
-        city: req.body.city,
-        country: req.body.country
+// router.post(`/`,async (req, res) => {
+//     let user = new User({
+//         name: req.body.name,
+//         email: req.body.email,
+//         passwordHash: bcrypt.hashSync(req.body.passwordHash, 10),
+//         phone: req.body.phone ,
+//         isAdmin: req.body.isAdmin,
+//         street: req.body.street,
+//         apartment: req.body.apartment,
+//         zip :req.body.zip,
+//         city: req.body.city,
+//         country: req.body.country
     
 
-    })
-    user = await user.save();
+//     })
+//     user = await user.save();
 
-    if (!user){
-        return res.status(404).send('user cngt be created');
-    }
-    res.send(user)
+//     if (!user){
+//         return res.status(404).send('user cngt be created');
+//     }
+//     res.send(user)
 
-})
+// })
 
 
 //login user
 router.post('/login', async (req,res) => {
-    console.log(req.body)
+
+    // console.log(req.body)
+    
     const user = await User.findOne({email: req.body.email})
     
     const secret = process.env.secret;
@@ -84,6 +86,10 @@ router.post('/login', async (req,res) => {
 
 //register user
 router.post(`/register`,async (req, res) => {
+    const doesExists = User.findOne({email:req.body.email})
+    if(doesExists){
+        return res.status(400).send('The user account already exists with this email');
+    }
     let user = new User({
         name: req.body.name,
         email: req.body.email,

@@ -176,7 +176,7 @@ router.get(`/get/featured/:count`, async (req, res) =>{
 
     const count = req.params.count ? req.params.count : 0
     let products = await Product.find({isFeatured:true}).select('name').limit(+count)
-    
+    products.sort()
     if(!products){
         return res.status(500).send('no featured products');
 

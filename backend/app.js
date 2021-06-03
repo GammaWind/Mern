@@ -12,6 +12,7 @@ const api = process.env.API_URL
 const productsRouter = require('../backend/routers/product')
 const categoriesRouter = require('./routers/categories')
 const usersRouter = require('./routers/users');
+const ordersRouter = require('./routers/orders')
 const errorHandler = require('./helpers/error-handler');
 
 
@@ -28,6 +29,7 @@ app.use(errorHandler)
 app.use(`${api}/products`,productsRouter);
 app.use(`${api}/categories`,categoriesRouter);
 app.use(`${api}/users`,usersRouter);
+app.use(`${api}/orders`,ordersRouter);
 
 
 
