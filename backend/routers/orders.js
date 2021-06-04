@@ -2,10 +2,15 @@ const {Order} = require('../models/order');
 const {OrderItem} = require('../models/order-item')
 const express = require('express')
 const router = express.Router();
+const { clearKey } = require("../helpers/cache");
+
+// imported clearkey from redis
 
 router.get('/', async (req, res) =>{
     //we did filter also populte some fields from user model also sorted the results base on some attribute in desc order
-    const orderList = await Order.find()
+    
+    //also .cache() is the mentho to chache here it is dramatically decreasing the lookup times
+    const orderList = await Order.find().cache()
     .populate('user','name')
     .populate({path : 'orderItems' , populate:  'product'})
     .sort({'dateOrdered':-1});
@@ -72,9 +77,15 @@ router.post(`/`,async (req, res) => {
 
 
     })
+    try {
+        order = await order.save();
+        clearKey(Order.collection.collectionName);
+        res.send(order);
+      } catch (err) {
+        res.send(400, err);
+      }
     
     
-    order = await order.save();
 
     if (!order){
         return res.status(404).send('order cant be created')
@@ -85,7 +96,7 @@ router.post(`/`,async (req, res) => {
 
 
 router.put('/:id', async (req, res) => {
-    console.log('herere')
+    
     let order = await Order.findByIdAndUpdate(
         req.params.id , 
         {
