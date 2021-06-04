@@ -25,7 +25,7 @@ router.get('/', async (req, res) =>{
 
 router.get('/:id', async (req, res) =>{
     //we did filter also populte some fields from user model also sorted the results base on some attribute in desc order
-    const order = await Order.findById(req.params.id)
+    const order = await Order.findById(req.params.id).cache()
     .populate('user','name')
     .populate({path : 'orderItems' , populate:{path: 'product' , populate: ['category']}});
 
