@@ -13,9 +13,9 @@ const client = redis.createClient({
 client.hget = util.promisify(client.hget);
 const exec = mongoose.Query.prototype.exec;
 
-mongoose.Query.prototype.cache = function(options = { expire: 600 }) {
+mongoose.Query.prototype.cache = function(options = { time: 600 }) {
   this.useCache = true;
-  this.expire = options.expire;
+  this.time = options.time;
   this.hashKey = JSON.stringify(options.key || this.mongooseCollection.name);
 
   return this;

@@ -96,19 +96,30 @@ router.post(`/`,async (req, res) => {
 
 
 router.put('/:id', async (req, res) => {
-    
-    let order = await Order.findByIdAndUpdate(
-        req.params.id , 
-        {
-            status: req.body.status
-        },
-        {
-            new:true
+   
+    try {
+        let order = await Order.findByIdAndUpdate(
+            req.params.id , 
+            {
+                status: req.body.status
+            },
+            {
+                new:true
+            }
+        )
+        if (!order){
+            return res.status(404).send('order cant be modified')
         }
-    )
-    if (!order){
-        return res.status(404).send('order cant be modified')
-    }
+        
+        clearKey(Order.collection.collectionName);
+        res.send(order);
+      } catch (err) {
+        res.send(400, err);
+      }
+    
+    
+    
+    
     res.send(order)
 
 
