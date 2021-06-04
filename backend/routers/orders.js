@@ -156,4 +156,23 @@ router.get('/get/totalsales', async (req, res) => {
     res.send(totalSales )
 })
 
+
+//get orders palced by a user
+router.get('/get/userOrders/:userid', async (req, res) =>{
+    //we did filter also populte some fields from user model also sorted the results base on some attribute in desc order
+    
+    //also .cache() is the mentho to chache here it is dramatically decreasing the lookup times
+    const userOrderList = await Order.find({user : req.params.userid})
+    .populate({path : 'orderItems' , populate:{path: 'product' , populate: ['category']}})
+    .sort({'dateOrdered':-1});
+
+    if (!userOrderList) {
+        res.status(500).json({success:false})
+    }
+    res.send(userOrderList)
+})
+
+
+
+
 module.exports = router;
