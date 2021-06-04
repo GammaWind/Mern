@@ -22,7 +22,6 @@ router.get('/', async (req, res) =>{
 })
 
 
-
 router.get('/:id', async (req, res) =>{
     //we did filter also populte some fields from user model also sorted the results base on some attribute in desc order
     const order = await Order.findById(req.params.id).cache()
@@ -146,6 +145,15 @@ router.delete(`/:id`, (req, res) => {
     })
 })
 
+router.get('/get/totalsales', async (req, res) => {
+    const totalSales = await Order.aggregate([
+        { $group : { _id: null , totalsales : { $sum : '$totalPrice'}}}
+    ])
 
+    if(!totalSales){
+        return res.status(400).send('order sales cnt be generated')
+    }
+    res.send(totalSales )
+})
 
 module.exports = router;
